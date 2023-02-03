@@ -1,6 +1,6 @@
 .App {
+  border: 3px solid lime;
+  position: relative;
   height: 100%;
   width: 100%;
-  display: flex;
-  align-items: center;
 }

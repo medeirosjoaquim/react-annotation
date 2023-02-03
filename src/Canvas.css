@@ -1,16 +1,24 @@
-.wrapper {
-  height: 50%;
-  width: 50%;
+.canvas-wrapper {
+  height: 340px;
+  width: 640px;
+  margin: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -60px;
+  bottom: 0;
   margin: auto;
 }
 .upper-canvas {
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 .controls {
+  position: absolute;
   padding: 0.5rem;
   border-radius: 12px;
-  margin-top: 1rem;
-  width: 50%;
+  width: 80%;
+  bottom: -12rem;
+  margin: 1rem auto;
   background-color: #777;
   display: flex;
   justify-content: space-between;

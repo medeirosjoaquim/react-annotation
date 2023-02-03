@@ -57,9 +57,9 @@ const Canvas = () => {
   }
 
   return (
-    <div className="wrapper">
+    <div className="canvas-wrapper">
       <div className="canvas-parent">
-        <canvas id="mycanvas" ref={canvasRef} width={600} height={400} />
+        <canvas id="mycanvas" ref={canvasRef} width={640} height={340} />
       </div>
       <div className="controls">
         <button

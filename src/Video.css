@@ -1,0 +1,16 @@
+.video-wrapper {
+  background-color: blue;
+  height: 400px;
+  width: 640px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+video {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
