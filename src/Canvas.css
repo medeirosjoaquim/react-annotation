@@ -1,0 +1,17 @@
+.wrapper {
+  height: 50%;
+  width: 50%;
+  margin: auto;
+}
+.upper-canvas {
+  border: 1px solid black;
+}
+.controls {
+  padding: 0.5rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  width: 50%;
+  background-color: #777;
+  display: flex;
+  justify-content: space-between;
+}
