@@ -12,6 +12,7 @@ const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
   const fabricRef = useRef() as MutableRefObject<fabric.Canvas>
   const [isDrawing, setIsDrawing] = useState(false)
+  const [isAnnotating, setIsAnnotating] = useState(false)
   useEffect(() => {
     if (canvasRef.current) {
       fabricRef.current = new fabric.Canvas(canvasRef.current, {
@@ -57,9 +58,21 @@ const Canvas = () => {
   }
 
   return (
-    <div className="canvas-wrapper">
+    <div
+      className="canvas-wrapper"
+      style={{
+        zIndex: isAnnotating ? 3 : 1,
+      }}
+    >
       <div className="canvas-parent">
-        <canvas id="mycanvas" ref={canvasRef} width={640} height={340} />
+        <canvas id="mycanvas" ref={canvasRef} width={640} height={400} />
+      </div>
+      <div className="toggle-annotation">
+        <input
+          type="checkbox"
+          onChange={(e) => setIsAnnotating(e.target.checked)}
+        />
+        <span>Toggle Annotation</span>
       </div>
       <div className="controls">
         <button
