@@ -37,6 +37,11 @@ const Canvas = () => {
     var text = new fabric.IText("add comment", { left: 100, top: 100 })
     fabricRef.current.add(text)
   }
+  const deleteSelected = () => {
+    if (fabricRef.current.getActiveObject()) {
+      fabricRef.current.remove(fabricRef.current.getActiveObject()!)
+    }
+  }
 
   const onAddArrow = () => {
     const triangle = new fabric.Triangle({
@@ -81,10 +86,11 @@ const Canvas = () => {
             border: !isDrawing ? "" : "1px solid #fafafa",
           }}
         >
-          toggle brush
+          {isDrawing ? "Toggle selection" : "Toggle brush"}
         </button>
         <button onClick={() => onAddText()}>add text</button>
         <button onClick={() => onAddArrow()}>add arrow</button>
+        <button onClick={() => deleteSelected()}>delete</button>
       </div>
     </div>
   )
