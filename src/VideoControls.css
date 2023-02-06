@@ -1,7 +1,6 @@
 .video-controls {
   display: flex;
   flex-direction: column;
-  align-items: center;
   background-color: #333;
   color: #fff;
   padding: 10px;
@@ -17,6 +16,7 @@
   cursor: pointer;
 }
 .video-commands {
+  margin-top: 0.5rem;
   display: flex;
 }
 .video-progress {
@@ -24,6 +24,7 @@
 }
 .video-controls input[type="range"] {
   appearance: none;
+  margin-top: 1rem;
   width: calc(100% - 32px);
   height: 10px;
   background: #ddd;

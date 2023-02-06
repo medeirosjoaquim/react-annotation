@@ -50,10 +50,7 @@ const VideoControls: React.FC<Props> = ({ videoRef }) => {
   }
 
   return (
-    <div
-      style={{ width: videoRef.current?.offsetWidth }}
-      className="video-controls"
-    >
+    <div className="video-controls">
       <div className="video-commands">
         <button onClick={handlePlayPause}>
           {playing ? <span>&#10074;&#10074;</span> : <span>&#9658;</span>}

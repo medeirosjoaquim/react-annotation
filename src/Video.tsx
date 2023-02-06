@@ -28,7 +28,6 @@ function Video() {
     <div className="video-wrapper">
       <video
         preload="metadata"
-        controls
         ref={videoRef}
         onLoadedMetadata={handleLoadedMetadata}
       >

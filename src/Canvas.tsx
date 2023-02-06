@@ -10,9 +10,10 @@ import { fabric } from "fabric"
 
 const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
-  const fabricRef = useRef() as MutableRefObject<fabric.Canvas>
+  const fabricRef = useRef(
+    new fabric.Canvas("")
+  ) as MutableRefObject<fabric.Canvas>
   const [isDrawing, setIsDrawing] = useState(false)
-  const [isAnnotating, setIsAnnotating] = useState(true)
   useEffect(() => {
     if (canvasRef.current) {
       fabricRef.current = new fabric.Canvas(canvasRef.current, {
@@ -28,22 +29,31 @@ const Canvas = () => {
     }
   }, [canvasRef])
 
+  useEffect(() => {
+    if (fabricRef.current) {
+      fabricRef.current.isDrawingMode = isDrawing
+    }
+  }, [isDrawing])
+
   const toggleBrush = () => {
-    fabricRef.current.isDrawingMode = !fabricRef.current.isDrawingMode
-    setIsDrawing(fabricRef.current.isDrawingMode)
+    setIsDrawing(!fabricRef.current.isDrawingMode)
   }
 
   const onAddText = () => {
+    setIsDrawing(false)
     var text = new fabric.IText("add comment", { left: 100, top: 100 })
     fabricRef.current.add(text)
   }
   const deleteSelected = () => {
+    setIsDrawing(false)
     if (fabricRef.current.getActiveObject()) {
       fabricRef.current.remove(fabricRef.current.getActiveObject()!)
     }
   }
 
   const onAddArrow = () => {
+    setIsDrawing(false)
+
     const triangle = new fabric.Triangle({
       width: 10,
       height: 15,
@@ -66,18 +76,11 @@ const Canvas = () => {
     <div
       className="canvas-wrapper"
       style={{
-        zIndex: isAnnotating ? 3 : 1,
+        cursor: "pointer",
       }}
     >
       <div className="canvas-parent">
         <canvas id="mycanvas" ref={canvasRef} width={640} height={400} />
-      </div>
-      <div className="toggle-annotation">
-        {/* <input
-          type="checkbox"
-          onChange={(e) => setIsAnnotating(e.target.checked)}
-        /> */}
-        <span>Toggle Annotation</span>
       </div>
       <div className="controls">
         <button
