@@ -1,95 +1,82 @@
-import React, { useState, useEffect } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import "./VideoControls.css"
 interface Props {
-  videoRef: React.RefObject<HTMLVideoElement | null>
+  videoRef: React.RefObject<HTMLVideoElement>
 }
 
 const VideoControls: React.FC<Props> = ({ videoRef }) => {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [playing, setPlaying] = useState(false)
 
   useEffect(() => {
-    if (!videoRef.current) {
+    const video = videoRef.current
+    if (!video) {
       return
     }
 
-    const updateProgress = () => {
-      if (!videoRef.current) {
-        return
-      }
-
-      setProgress(
-        (videoRef.current.currentTime / videoRef.current.duration) * 100
-      )
-      setCurrentTime(videoRef.current.currentTime)
+    const handleTimeUpdate = () => {
+      setCurrentTime(video.currentTime)
+      setDuration(video.duration)
     }
 
-    videoRef.current.addEventListener("timeupdate", updateProgress)
+    video.addEventListener("timeupdate", handleTimeUpdate)
 
     return () => {
-      if (!videoRef.current) {
-        return
-      }
-      videoRef.current.removeEventListener("timeupdate", updateProgress)
+      video.removeEventListener("timeupdate", handleTimeUpdate)
     }
   }, [videoRef])
 
-  const togglePlay = () => {
-    if (!videoRef.current) {
-      return
-    }
-
-    if (isPlaying) {
-      videoRef.current.pause()
+  const handlePlayPause = () => {
+    if (playing) {
+      videoRef.current!.pause()
     } else {
-      videoRef.current.play()
+      videoRef.current!.play()
     }
-    setIsPlaying(!isPlaying)
+
+    setPlaying(!playing)
   }
 
-  const skipBackward = () => {
-    if (!videoRef.current) {
-      return
-    }
-
-    videoRef.current.currentTime -= 10
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    videoRef.current!.currentTime = Number(e.target.value)
   }
 
-  const skipForward = () => {
-    if (!videoRef.current) {
-      return
-    }
-
-    videoRef.current.currentTime += 10
+  const handleRewind = () => {
+    videoRef.current!.currentTime -= 10
   }
 
-  const seek = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!videoRef.current) {
-      return
-    }
-
-    const time = (event.target.valueAsNumber / 100) * videoRef.current.duration
-    videoRef.current.currentTime = time
+  const handleAdvance = () => {
+    videoRef.current!.currentTime += 10
   }
 
   return (
-    <div className="video-controls">
-      <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
-      <button onClick={skipBackward}>-10s</button>
-      <div style={{ display: "inline-block", width: "100%" }}>
+    <div
+      style={{ width: videoRef.current?.offsetWidth }}
+      className="video-controls"
+    >
+      <div className="video-commands">
+        <button onClick={handlePlayPause}>
+          {playing ? <span>&#10074;&#10074;</span> : <span>&#9658;</span>}
+        </button>
+        <button onClick={handleRewind}>
+          <span>&#8630;</span>
+        </button>
+        <button onClick={handleAdvance}>
+          <span>&#8631;</span>
+        </button>
+        <div>
+          {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60)} /{" "}
+          {Math.floor(duration / 60)}:{Math.floor(duration % 60)}
+        </div>
+      </div>
+      <div className="video-progress">
         <input
           type="range"
           min={0}
-          max={100}
-          value={progress}
-          onChange={seek}
-          style={{ width: "100%" }}
+          max={duration}
+          value={currentTime}
+          onChange={handleSeek}
         />
-      </div>
-      <button onClick={skipForward}>+10s</button>
-      <div style={{ display: "inline-block", marginLeft: "10px" }}>
-        {currentTime.toFixed(1)} / {videoRef.current?.duration.toFixed(1)}
       </div>
     </div>
   )

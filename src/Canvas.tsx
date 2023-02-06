@@ -12,7 +12,7 @@ const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
   const fabricRef = useRef() as MutableRefObject<fabric.Canvas>
   const [isDrawing, setIsDrawing] = useState(false)
-  const [isAnnotating, setIsAnnotating] = useState(false)
+  const [isAnnotating, setIsAnnotating] = useState(true)
   useEffect(() => {
     if (canvasRef.current) {
       fabricRef.current = new fabric.Canvas(canvasRef.current, {
@@ -73,10 +73,10 @@ const Canvas = () => {
         <canvas id="mycanvas" ref={canvasRef} width={640} height={400} />
       </div>
       <div className="toggle-annotation">
-        <input
+        {/* <input
           type="checkbox"
           onChange={(e) => setIsAnnotating(e.target.checked)}
-        />
+        /> */}
         <span>Toggle Annotation</span>
       </div>
       <div className="controls">
@@ -91,6 +91,7 @@ const Canvas = () => {
         <button onClick={() => onAddText()}>add text</button>
         <button onClick={() => onAddArrow()}>add arrow</button>
         <button onClick={() => deleteSelected()}>delete</button>
+        <button onClick={() => deleteSelected()}>save</button>
       </div>
     </div>
   )
