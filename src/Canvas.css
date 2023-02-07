@@ -29,7 +29,7 @@
   position: absolute;
   padding: 0.5rem;
   top: -1rem;
-  left: -13.25rem;
+  left: -16rem;
   margin: 1rem auto;
   background-color: #777;
   display: flex;
@@ -40,19 +40,17 @@
   background-color: #333;
   color: #fff;
   padding: 10px;
-  height: 508px;
+  height: 518px;
   min-width: 260px;
-
 }
-.controls  button {
+.controls button {
   text-transform: uppercase;
   width: 100%;
   border: 2px solid white;
 }
-.controls  button:hover {
+.controls button:hover {
   opacity: 50%;
   color: yellow;
   border: 2px solid yellow;
   cursor: pointer;
-
 }

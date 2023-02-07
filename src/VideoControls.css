@@ -7,6 +7,7 @@
 }
 
 .video-controls button {
+  position: relative;
   background-color: transparent;
   border: 1px solid #fff;
   color: #fff;
@@ -21,6 +22,14 @@
 }
 .video-progress {
   width: 100%;
+}
+
+.progress-bar-marker {
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background-color: black;
+  top: 0;
 }
 .video-controls input[type="range"] {
   appearance: none;

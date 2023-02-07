@@ -33,7 +33,11 @@ function Video() {
       >
         <source src={url} />
       </video>
-      <VideoControls videoRef={videoRef} />
+      // copilot create a settime
+      <VideoControls
+        videoRef={videoRef}
+        annotationsTimeframe={["00:00:0", "00:00:10", "00:01:15"]}
+      />
     </div>
   )
 }

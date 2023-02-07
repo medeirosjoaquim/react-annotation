@@ -1,10 +1,18 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useRef, useState, useEffect, useMemo } from "react"
 import "./VideoControls.css"
 interface Props {
   videoRef: React.RefObject<HTMLVideoElement>
+  annotationsTimeframe: string[]
 }
 
-const VideoControls: React.FC<Props> = ({ videoRef }) => {
+const convertToSeconds = (time: string): number => {
+  const [hours, minutes, seconds] = time
+    .split(":")
+    .map((val) => parseInt(val, 10))
+  return hours * 3600 + minutes * 60 + seconds
+}
+
+const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -49,6 +57,11 @@ const VideoControls: React.FC<Props> = ({ videoRef }) => {
     videoRef.current!.currentTime += 10
   }
 
+  const convertedMarks = useMemo(
+    () => annotationsTimeframe.map((mark) => convertToSeconds(mark)),
+    [annotationsTimeframe]
+  )
+  console.log(duration)
   return (
     <div className="video-controls">
       <div className="video-commands">
@@ -74,6 +87,15 @@ const VideoControls: React.FC<Props> = ({ videoRef }) => {
           value={currentTime}
           onChange={handleSeek}
         />
+        {convertedMarks.map((mark) => (
+          <mark
+            key={mark}
+            style={{
+              left: `calc(${(mark / duration) * 100}% + 15px)`,
+              position: "absolute",
+            }}
+          />
+        ))}
       </div>
     </div>
   )
