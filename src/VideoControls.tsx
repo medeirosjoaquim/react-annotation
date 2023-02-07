@@ -63,6 +63,14 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
   )
   console.log(convertedMarks)
   console.log(currentTime)
+  const getPercentage = (time: string) => {
+    const [hours, minutes, seconds] = time
+      .split(":")
+      .map((part) => parseInt(part, 10))
+    const annotationTime = hours * 3600 + minutes * 60 + seconds
+    return (annotationTime / duration) * 100
+  }
+
   return (
     <div className="video-controls">
       <div className="video-commands">
@@ -102,13 +110,7 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
         </div>
       </div>
       <div className="video-progress">
-        <div
-          className="input-wrapper"
-          style={{
-            position: "relative",
-            width: `${(currentTime / duration) * 100}%`,
-          }}
-        >
+        <div className="input-wrapper">
           <input
             type="range"
             min={0}
@@ -116,16 +118,15 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
             value={currentTime}
             onChange={handleSeek}
           />
-          {convertedMarks.map((mark) => (
-            <mark
-              key={mark}
-              style={{
-                bottom: "-1rem",
-                left: `calc(${(mark / duration) * 100}% + 4px)`,
-                position: "absolute",
-              }}
-            />
-          ))}
+          <div className="markers">
+            {annotationsTimeframe.map((time, index) => (
+              <div
+                key={index}
+                className="marker"
+                style={{ left: `calc(${getPercentage(time)}% + 4px)` }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
