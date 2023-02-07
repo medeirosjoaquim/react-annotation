@@ -61,7 +61,8 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     () => annotationsTimeframe.map((mark) => convertToSeconds(mark)),
     [annotationsTimeframe]
   )
-  console.log(duration)
+  console.log(convertedMarks)
+  console.log(currentTime)
   return (
     <div className="video-controls">
       <div className="video-commands">
@@ -75,27 +76,57 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
           <span>&#8631;</span>
         </button>
         <div>
-          {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60)} /{" "}
-          {Math.floor(duration / 60)}:{Math.floor(duration % 60)}
+          {Math.floor(currentTime / 3600)
+            .toString()
+            .padStart(2, "0")}
+          :
+          {Math.floor((currentTime % 3600) / 60)
+            .toString()
+            .padStart(2, "0")}
+          :
+          {Math.floor(currentTime % 60)
+            .toString()
+            .padStart(2, "0")}{" "}
+          /{" "}
+          {Math.floor(duration / 3600)
+            .toString()
+            .padStart(2, "0")}
+          :
+          {Math.floor((duration % 3600) / 60)
+            .toString()
+            .padStart(2, "0")}
+          :
+          {Math.floor(duration % 60)
+            .toString()
+            .padStart(2, "0")}
         </div>
       </div>
       <div className="video-progress">
-        <input
-          type="range"
-          min={0}
-          max={duration}
-          value={currentTime}
-          onChange={handleSeek}
-        />
-        {convertedMarks.map((mark) => (
-          <mark
-            key={mark}
-            style={{
-              left: `calc(${(mark / duration) * 100}% + 15px)`,
-              position: "absolute",
-            }}
+        <div
+          className="input-wrapper"
+          style={{
+            position: "relative",
+            width: `${(currentTime / duration) * 100}%`,
+          }}
+        >
+          <input
+            type="range"
+            min={0}
+            max={duration}
+            value={currentTime}
+            onChange={handleSeek}
           />
-        ))}
+          {convertedMarks.map((mark) => (
+            <mark
+              key={mark}
+              style={{
+                bottom: "-1rem",
+                left: `calc(${(mark / duration) * 100}% + 4px)`,
+                position: "absolute",
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
