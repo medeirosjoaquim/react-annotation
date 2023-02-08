@@ -8,7 +8,7 @@ interface Props {
 const convertToSeconds = (time: string): number => {
   const [hours, minutes, seconds] = time
     .split(":")
-    .map((val) => parseInt(val, 10))
+    .map((val) => parseFloat(val))
   return hours * 3600 + minutes * 60 + seconds
 }
 
@@ -16,7 +16,7 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [playing, setPlaying] = useState(false)
-
+  const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
   useEffect(() => {
     const video = videoRef.current
     if (!video) {
@@ -57,20 +57,50 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     videoRef.current!.currentTime += 10
   }
 
+  function formatDuration(timeInSeconds: number) {
+    return (
+      `${Math.floor(timeInSeconds / 3600)
+        .toString()
+        .padStart(2, "0")}:` +
+      `${Math.floor((timeInSeconds % 3600) / 60)
+        .toString()
+        .padStart(2, "0")}:` +
+      `${Math.floor(timeInSeconds % 60)
+        .toString()
+        .padStart(2, "0")}`
+    )
+  }
+
   const convertedMarks = useMemo(
     () => annotationsTimeframe.map((mark) => convertToSeconds(mark)),
     [annotationsTimeframe]
   )
-  console.log(convertedMarks)
-  console.log(currentTime)
-  const getPercentage = (time: string) => {
-    const [hours, minutes, seconds] = time
-      .split(":")
-      .map((part) => parseInt(part, 10))
-    const annotationTime = hours * 3600 + minutes * 60 + seconds
-    return (annotationTime / duration) * 100
-  }
 
+  //write the getPercentage function here so each marker is placed correctly
+  // time is hh:mm:ss format
+  // consider the input lenght to place the markers correctly
+  // marker 00:01:15 should be placed where the input thumb is
+  // showing 00:01:15 of the video being played
+
+  const getPixelPosition = (time: string) => {
+    if (!inputRef.current) {
+      return 0
+    }
+
+    const inputWidth = inputRef.current!.offsetWidth
+    let seconds = convertToSeconds(time)
+    console.log(time, seconds)
+    if (seconds === 0) {
+      seconds += 3
+    } else if (seconds > 0 && seconds <= 180) {
+      seconds += 3
+    }
+    // else if (seconds < 180) {
+    //   // handle corner case for values under 00:03:00
+    //   seconds *= 1.3
+    // }
+    return (seconds / duration) * inputWidth
+  }
   return (
     <div className="video-controls">
       <div className="video-commands">
@@ -84,49 +114,28 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
           <span>&#8631;</span>
         </button>
         <div>
-          {Math.floor(currentTime / 3600)
-            .toString()
-            .padStart(2, "0")}
-          :
-          {Math.floor((currentTime % 3600) / 60)
-            .toString()
-            .padStart(2, "0")}
-          :
-          {Math.floor(currentTime % 60)
-            .toString()
-            .padStart(2, "0")}{" "}
-          /{" "}
-          {Math.floor(duration / 3600)
-            .toString()
-            .padStart(2, "0")}
-          :
-          {Math.floor((duration % 3600) / 60)
-            .toString()
-            .padStart(2, "0")}
-          :
-          {Math.floor(duration % 60)
-            .toString()
-            .padStart(2, "0")}
+          {formatDuration(currentTime)} / {formatDuration(duration)}
         </div>
       </div>
       <div className="video-progress">
-        <div className="input-wrapper">
-          <input
-            type="range"
-            min={0}
-            max={duration}
-            value={currentTime}
-            onChange={handleSeek}
-          />
-          <div className="markers">
-            {annotationsTimeframe.map((time, index) => (
-              <div
-                key={index}
-                className="marker"
-                style={{ left: `calc(${getPercentage(time)}% + 4px)` }}
-              />
-            ))}
-          </div>
+        <input
+          ref={inputRef}
+          type="range"
+          min={0}
+          max={duration}
+          value={currentTime}
+          onChange={handleSeek}
+        />
+        <div className="marker-wrapper">
+          {annotationsTimeframe.map((time, index) => (
+            <div
+              key={index}
+              className="marker"
+              style={{
+                left: `calc(${getPixelPosition(time)}px)`,
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>

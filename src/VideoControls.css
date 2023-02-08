@@ -1,13 +1,16 @@
 .video-controls {
   display: flex;
   flex-direction: column;
+  align-items: center;
   background-color: #333;
   color: #fff;
   padding: 10px;
 }
-
+.marker-wrapper {
+  height: 8px;
+  width: calc(100% - 32px);
+}
 .video-controls button {
-  position: relative;
   background-color: transparent;
   border: 1px solid #fff;
   color: #fff;
@@ -17,25 +20,25 @@
   cursor: pointer;
 }
 .video-commands {
-  margin-top: 0.5rem;
   display: flex;
 }
 .video-progress {
-  width: calc(100%);
-  border: 1px solid red;
+  width: 100%;
   position: relative;
 }
 
-.progress-bar-marker {
+.marker {
   position: absolute;
-  height: 100%;
-  width: 1px;
-  background-color: black;
-  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  height: 12px;
+  background-color: red;
+  opacity: 0.5;
 }
+
 .video-controls input[type="range"] {
   appearance: none;
-  margin-top: 1rem;
   width: calc(100% - 32px);
   height: 10px;
   background: #ddd;
@@ -45,26 +48,15 @@
   transition: opacity 0.2s;
 }
 
-.markers {
-}
-.marker {
-  position: absolute;
-  width: 2px;
-  height: 12px;
-  bottom: 0.25rem;
-  background-color: white;
-}
-
 .video-controls input[type="range"]:hover {
   opacity: 1;
 }
 
 .video-controls input[type="range"]::-webkit-slider-thumb {
   appearance: none;
-  width: 20px;
+  width: 12px;
   height: 20px;
   background: #fff;
-  border-radius: 50%;
   cursor: pointer;
 }
 
@@ -72,6 +64,6 @@
   width: 20px;
   height: 20px;
   background: #fff;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   cursor: pointer;
 }
