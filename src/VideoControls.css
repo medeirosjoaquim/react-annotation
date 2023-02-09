@@ -29,10 +29,10 @@
 
 .marker {
   position: absolute;
-  bottom: 0;
+  bottom: 0.5rem;
   left: 0;
-  width: 2px;
-  height: 12px;
+  width: 4px;
+  height: 4px;
   background-color: red;
   opacity: 0.5;
 }

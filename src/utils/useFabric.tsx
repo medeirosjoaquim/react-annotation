@@ -16,8 +16,8 @@ export const useFabric = (
           isDrawingMode: false,
         })
       )
-      fabricInstance.freeDrawingBrush.color = "#e83e8c"
-      fabricInstance.freeDrawingBrush.width = 7
+      fabricInstance.freeDrawingBrush.color = "#FF0000"
+      fabricInstance.freeDrawingBrush.width = 12
     }
     return () => {
       console.log("end")
@@ -26,8 +26,18 @@ export const useFabric = (
     }
   }, [canvasRef])
 
+  //create a useeffect for isDrawing
+
   useEffect(() => {
     if (fabricInstance) {
+      fabricInstance.isDrawingMode = isDrawing
+    }
+  }, [isDrawing, fabricInstance])
+
+  useEffect(() => {
+    if (fabricInstance) {
+      fabricInstance.freeDrawingBrush.color = "#FF0000"
+      fabricInstance.freeDrawingBrush.width = 12
       fabricInstance.isDrawingMode = isDrawing
     }
   }, [isDrawing, fabricInstance])
@@ -77,5 +87,6 @@ export const useFabric = (
     deleteSelected,
     onAddArrow,
     isDrawing,
+    setIsDrawing,
   }
 }

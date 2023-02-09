@@ -1,13 +1,26 @@
-import React, { MutableRefObject, useRef } from "react"
+import React, { MutableRefObject, useEffect, useRef } from "react"
 import "./Canvas.css"
 import { useFabric } from "./utils/useFabric"
+import { useAtom } from "jotai"
+import { isPlayingAtom } from "./atoms/isPlaying.atom"
 
 const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
+  //use isplayng atom here
+  const [playing, setPlaying] = useAtom(isPlayingAtom)
 
   const { toggleBrush, onAddText, deleteSelected, onAddArrow, isDrawing } =
     useFabric(canvasRef)
-
+  useEffect(() => {
+    console.log(isDrawing)
+    if (playing === null) {
+      console.log("playing is null")
+      return
+    }
+    if (isDrawing) {
+      setPlaying(false)
+    }
+  }, [isDrawing])
   return (
     <div
       className="canvas-wrapper"

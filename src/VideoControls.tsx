@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect, useMemo } from "react"
 import "./VideoControls.css"
+import { useAtom } from "jotai"
+import { isPlayingAtom } from "./atoms/isPlaying.atom"
 interface Props {
   videoRef: React.RefObject<HTMLVideoElement>
   annotationsTimeframe: string[]
@@ -15,8 +17,9 @@ const convertToSeconds = (time: string): number => {
 const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [playing, setPlaying] = useState(false)
+  const [playing, setPlaying] = useAtom(isPlayingAtom)
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
   useEffect(() => {
     const video = videoRef.current
     if (!video) {
@@ -35,14 +38,30 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     }
   }, [videoRef])
 
-  const handlePlayPause = () => {
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) {
+      return
+    }
+    if (playing === null) {
+      return
+    }
+    // video state must be equal to isPlayingAtom
     if (playing) {
-      videoRef.current!.pause()
+      video.play()
     } else {
-      videoRef.current!.play()
+      video.pause()
+    }
+  }, [playing])
+
+  const handlePlayPause = () => {
+    if (playing === null) {
+      setPlaying(true)
+      return
     }
 
     setPlaying(!playing)
+    console.log(playing)
   }
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,17 +90,6 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     )
   }
 
-  const convertedMarks = useMemo(
-    () => annotationsTimeframe.map((mark) => convertToSeconds(mark)),
-    [annotationsTimeframe]
-  )
-
-  //write the getPercentage function here so each marker is placed correctly
-  // time is hh:mm:ss format
-  // consider the input lenght to place the markers correctly
-  // marker 00:01:15 should be placed where the input thumb is
-  // showing 00:01:15 of the video being played
-
   const getPixelPosition = (time: string) => {
     if (!inputRef.current) {
       return 0
@@ -93,7 +101,7 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     if (seconds === 0) {
       seconds += 3
     } else if (seconds > 0 && seconds <= 180) {
-      seconds += 3
+      seconds += 8
     }
     // else if (seconds < 180) {
     //   // handle corner case for values under 00:03:00
@@ -101,6 +109,12 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     // }
     return (seconds / duration) * inputWidth
   }
+
+  const convertedMarks = useMemo(
+    () => annotationsTimeframe.map((mark) => getPixelPosition(mark)),
+    [annotationsTimeframe]
+  )
+
   return (
     <div className="video-controls">
       <div className="video-commands">
@@ -127,12 +141,12 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
           onChange={handleSeek}
         />
         <div className="marker-wrapper">
-          {annotationsTimeframe.map((time, index) => (
+          {convertedMarks.map((time, index) => (
             <div
               key={index}
               className="marker"
               style={{
-                left: `calc(${getPixelPosition(time)}px)`,
+                left: `calc(${time}px)`,
               }}
             />
           ))}
