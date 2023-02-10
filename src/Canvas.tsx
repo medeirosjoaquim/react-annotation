@@ -3,16 +3,23 @@ import "./Canvas.css"
 import { useFabric } from "./utils/useFabric"
 import { useAtom } from "jotai"
 import { isPlayingAtom } from "./atoms/isPlaying.atom"
+import { globalCurrentTimeAtom } from "./atoms/currentTimeAtom"
 
 const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
   //use isplayng atom here
   const [playing, setPlaying] = useAtom(isPlayingAtom)
 
-  const { toggleBrush, onAddText, deleteSelected, onAddArrow, isDrawing } =
-    useFabric(canvasRef)
+  const {
+    toggleBrush,
+    onAddText,
+    deleteSelected,
+    onAddArrow,
+    isDrawing,
+    onSave,
+  } = useFabric(canvasRef)
+  const [globalCurrentTime] = useAtom(globalCurrentTimeAtom)
   useEffect(() => {
-    console.log(isDrawing)
     if (playing === null) {
       console.log("playing is null")
       return
@@ -43,7 +50,7 @@ const Canvas = () => {
         <button onClick={() => onAddText()}>add text</button>
         <button onClick={() => onAddArrow()}>add arrow</button>
         <button onClick={() => deleteSelected()}>delete</button>
-        <button onClick={() => deleteSelected()}>save</button>
+        <button onClick={() => onSave(globalCurrentTime)}>save</button>
       </div>
     </div>
   )

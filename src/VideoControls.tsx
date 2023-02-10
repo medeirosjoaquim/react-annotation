@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from "react"
 import "./VideoControls.css"
 import { useAtom } from "jotai"
 import { isPlayingAtom } from "./atoms/isPlaying.atom"
+import { setCurrentTimeAtom } from "./atoms/currentTimeAtom"
 interface Props {
   videoRef: React.RefObject<HTMLVideoElement>
   annotationsTimeframe: string[]
@@ -14,8 +15,22 @@ const convertToSeconds = (time: string): number => {
   return hours * 3600 + minutes * 60 + seconds
 }
 
+function convertToHHMMSS(seconds: number): string {
+  let hours = Math.floor(seconds / 3600)
+  let minutes = Math.floor((seconds % 3600) / 60)
+  let remainingSeconds = Math.floor(seconds % 60)
+
+  let hoursString = hours < 10 ? "0" + hours : hours.toString()
+  let minutesString = minutes < 10 ? "0" + minutes : minutes.toString()
+  let secondsString =
+    remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds.toString()
+
+  return `${hoursString}:${minutesString}:${secondsString}`
+}
+
 const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
   const [currentTime, setCurrentTime] = useState(0)
+  const [, setCurrentTimeGlobalAtom] = useAtom(setCurrentTimeAtom)
   const [duration, setDuration] = useState(0)
   const [playing, setPlaying] = useAtom(isPlayingAtom)
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -50,6 +65,7 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     if (playing) {
       video.play()
     } else {
+      setCurrentTimeGlobalAtom(convertToHHMMSS(video.currentTime))
       video.pause()
     }
   }, [playing])
@@ -61,7 +77,6 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     }
 
     setPlaying(!playing)
-    console.log(playing)
   }
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +112,7 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
 
     const inputWidth = inputRef.current!.offsetWidth
     let seconds = convertToSeconds(time)
-    console.log(time, seconds)
+    // console.log(time, seconds)
     if (seconds === 0) {
       seconds += 3
     } else if (seconds > 0 && seconds <= 180) {

@@ -58,7 +58,9 @@ export const useFabric = (
     })
     fabricInstance.discardActiveObject().renderAll()
   }
-
+  const onSave = (time: any) => {
+    console.log(time)
+  }
   const onAddArrow = () => {
     setIsDrawing(false)
 
@@ -88,5 +90,6 @@ export const useFabric = (
     onAddArrow,
     isDrawing,
     setIsDrawing,
+    onSave,
   }
 }
