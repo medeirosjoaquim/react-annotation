@@ -4,6 +4,7 @@ import { useFabric } from "./utils/useFabric"
 import { useAtom } from "jotai"
 import { isPlayingAtom } from "./atoms/isPlaying.atom"
 import { globalCurrentTimeAtom } from "./atoms/currentTimeAtom"
+import { useAppStore } from "./main"
 
 const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
@@ -19,6 +20,9 @@ const Canvas = () => {
     onSave,
   } = useFabric(canvasRef)
   const [globalCurrentTime] = useAtom(globalCurrentTimeAtom)
+
+  const annotations = useAppStore((state) => state.annotations)
+  console.log(annotations)
   useEffect(() => {
     if (playing === null) {
       console.log("playing is null")

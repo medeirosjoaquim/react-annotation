@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { fabric } from "fabric"
 import { nanoid } from "nanoid"
+import { useAppStore } from "../main"
 
 export const useFabric = (
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>
@@ -9,6 +10,7 @@ export const useFabric = (
     new fabric.Canvas("")
   )
   const [isDrawing, setIsDrawing] = useState(false)
+  const addAnnotation = useAppStore((state) => state.add)
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -63,6 +65,7 @@ export const useFabric = (
     const canvas = fabricInstance.toObject(["id", "time"])
     canvas.id = nanoid()
     canvas.time = time
+    addAnnotation(canvas)
     console.log(canvas)
   }
   const onAddArrow = () => {
