@@ -9,12 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.20.13",
+    "@nozbe/watermelondb": "^0.25.5",
     "fabric": "^5.3.0",
     "idb-keyval": "^6.2.0",
     "jotai": "^2.0.1",
+    "metro-react-native-babel-preset": "^0.75.0",
     "nanoid": "^4.0.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
     "@types/fabric": "^4.5.15",
