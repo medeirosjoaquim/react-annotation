@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from "react"
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react"
 import "./VideoControls.css"
 import { useAtom } from "jotai"
 import { isPlayingAtom } from "./atoms/isPlaying.atom"
@@ -105,29 +105,32 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     )
   }
 
-  const getPixelPosition = (time: string) => {
-    if (!inputRef.current) {
-      return 0
-    }
+  const getPixelPosition = useCallback(
+    (time: string) => {
+      if (!inputRef.current) {
+        return 0
+      }
 
-    const inputWidth = inputRef.current!.offsetWidth
-    let seconds = convertToSeconds(time)
-    // console.log(time, seconds)
-    if (seconds === 0) {
-      seconds += 3
-    } else if (seconds > 0 && seconds <= 180) {
-      seconds += 8
-    }
-    // else if (seconds < 180) {
-    //   // handle corner case for values under 00:03:00
-    //   seconds *= 1.3
-    // }
-    return (seconds / duration) * inputWidth
-  }
+      const inputWidth = inputRef.current!.offsetWidth
+      let seconds = convertToSeconds(time)
+      // console.log(time, seconds)
+      if (seconds === 0) {
+        seconds += 3
+      } else if (seconds > 0 && seconds <= 180) {
+        seconds += 8
+      }
+      // else if (seconds < 180) {
+      //   // handle corner case for values under 00:03:00
+      //   seconds *= 1.3
+      // }
+      return (seconds / duration) * inputWidth
+    },
+    [duration]
+  )
 
   const convertedMarks = useMemo(
     () => annotationsTimeframe.map((mark) => getPixelPosition(mark)),
-    [annotationsTimeframe]
+    [annotationsTimeframe, duration]
   )
 
   return (
