@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { fabric } from "fabric"
+import { nanoid } from "nanoid"
 
 export const useFabric = (
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>
@@ -58,8 +59,11 @@ export const useFabric = (
     })
     fabricInstance.discardActiveObject().renderAll()
   }
-  const onSave = (time: any) => {
-    console.log(time)
+  const onSave = (time: string) => {
+    const canvas = fabricInstance.toObject(["id", "time"])
+    canvas.id = nanoid()
+    canvas.time = time
+    console.log(canvas)
   }
   const onAddArrow = () => {
     setIsDrawing(false)
