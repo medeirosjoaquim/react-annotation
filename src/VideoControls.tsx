@@ -3,6 +3,7 @@ import "./VideoControls.css"
 import { useAtom } from "jotai"
 import { isPlayingAtom } from "./atoms/isPlaying.atom"
 import { setCurrentTimeAtom } from "./atoms/currentTimeAtom"
+import { useAppStore } from "./main"
 interface Props {
   videoRef: React.RefObject<HTMLVideoElement>
   annotationsTimeframe: string[]
@@ -30,7 +31,7 @@ function convertToHHMMSS(seconds: number): string {
 
 const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
   const [currentTime, setCurrentTime] = useState(0)
-  const [, setCurrentTimeGlobalAtom] = useAtom(setCurrentTimeAtom)
+  const setCurrentTimeState = useAppStore((state) => state.setCurrentTime)
   const [duration, setDuration] = useState(0)
   const [playing, setPlaying] = useAtom(isPlayingAtom)
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -44,6 +45,7 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime)
       setDuration(video.duration)
+      setCurrentTimeState(convertToHHMMSS(video.currentTime))
     }
 
     video.addEventListener("timeupdate", handleTimeUpdate)
@@ -65,7 +67,6 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
     if (playing) {
       video.play()
     } else {
-      setCurrentTimeGlobalAtom(convertToHHMMSS(video.currentTime))
       video.pause()
     }
   }, [playing])
@@ -75,7 +76,6 @@ const VideoControls: React.FC<Props> = ({ videoRef, annotationsTimeframe }) => {
       setPlaying(true)
       return
     }
-
     setPlaying(!playing)
   }
 

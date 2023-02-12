@@ -7,6 +7,8 @@ import { persist, createJSONStorage, devtools } from "zustand/middleware"
 import "./index.css"
 
 interface AppState {
+  currentTime: string
+  setCurrentTime: (time: string) => void
   annotations: object[]
   add: (item: any) => void
 }
@@ -16,6 +18,8 @@ export const useAppStore = create<AppState>()(
     persist(
       (set) => ({
         annotations: [],
+        currentTime: "00:00:00",
+        setCurrentTime: (time: string) => set({ currentTime: time }),
         add: (item) =>
           set((state) => ({ annotations: [...state.annotations, item] })),
       }),

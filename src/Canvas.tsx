@@ -10,6 +10,8 @@ const Canvas = () => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement | null>
   //use isplayng atom here
   const [playing, setPlaying] = useAtom(isPlayingAtom)
+  const annotations = useAppStore((state) => state.annotations)
+  const currentTime = useAppStore((state) => state.currentTime)
 
   const {
     toggleBrush,
@@ -18,11 +20,9 @@ const Canvas = () => {
     onAddArrow,
     isDrawing,
     onSave,
-  } = useFabric(canvasRef)
-  const [globalCurrentTime] = useAtom(globalCurrentTimeAtom)
+  } = useFabric(canvasRef, annotations, currentTime)
+  // const [globalCurrentTime] = useAtom(globalCurrentTimeAtom)
 
-  const annotations = useAppStore((state) => state.annotations)
-  console.log(annotations)
   useEffect(() => {
     if (playing === null) {
       console.log("playing is null")
@@ -54,7 +54,7 @@ const Canvas = () => {
         <button onClick={() => onAddText()}>add text</button>
         <button onClick={() => onAddArrow()}>add arrow</button>
         <button onClick={() => deleteSelected()}>delete</button>
-        <button onClick={() => onSave(globalCurrentTime)}>save</button>
+        <button onClick={() => onSave(currentTime)}>save</button>
       </div>
     </div>
   )

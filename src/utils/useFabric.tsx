@@ -4,7 +4,9 @@ import { nanoid } from "nanoid"
 import { useAppStore } from "../main"
 
 export const useFabric = (
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
+  annotations: object[],
+  currentTime: string
 ) => {
   const [fabricInstance, setFabricInstance] = useState<fabric.Canvas>(
     new fabric.Canvas("")
@@ -38,6 +40,22 @@ export const useFabric = (
   }, [isDrawing, fabricInstance])
 
   useEffect(() => {
+    if (fabricInstance && annotations.length > 0) {
+      const timeFrames = annotations.map((item: any) => item.time)
+      if (timeFrames.includes(currentTime)) {
+        const obj: any = annotations.find(
+          (item: any) => item.time === currentTime
+        )
+        fabricInstance.clear()
+        fabricInstance.loadFromJSON(obj, () => {
+          fabricInstance.renderAll()
+        })
+        console.log(currentTime)
+      }
+    }
+  }, [annotations, fabricInstance, currentTime])
+
+  useEffect(() => {
     if (fabricInstance) {
       fabricInstance.freeDrawingBrush.color = "#FF0000"
       fabricInstance.freeDrawingBrush.width = 12
@@ -61,10 +79,10 @@ export const useFabric = (
     })
     fabricInstance.discardActiveObject().renderAll()
   }
-  const onSave = (time: string) => {
+  const onSave = () => {
     const canvas = fabricInstance.toObject(["id", "time"])
     canvas.id = nanoid()
-    canvas.time = time
+    canvas.time = currentTime
     addAnnotation(canvas)
     console.log(canvas)
   }

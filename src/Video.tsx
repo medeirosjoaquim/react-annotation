@@ -7,10 +7,16 @@ import React, {
 } from "react"
 import "./Video.css"
 import VideoControls from "./VideoControls"
+import { useAppStore } from "./main"
 function Video() {
   const videoRef = useRef() as MutableRefObject<HTMLVideoElement>
   const url = "/big_buck_bunny_640.mp4#1"
   const [duration, setDuration] = useState<number>()
+  const annotations = useAppStore((state) => state.annotations)
+  const annotationsTimeframe = annotations.map(
+    (annotation: any) => annotation.time
+  )
+  console.log(annotationsTimeframe)
   const getDuration = useCallback((file: File) => {
     const video = document.createElement("video")
     video.preload = "metadata"
@@ -35,23 +41,7 @@ function Video() {
       </video>
       <VideoControls
         videoRef={videoRef}
-        annotationsTimeframe={[
-          "00:00:00",
-          "00:00:10",
-          "00:00:20",
-          "00:00:30",
-          "00:00:40",
-          "00:00:50",
-          "00:01:15",
-          "00:01:00",
-          "00:02:00",
-          "00:02:10",
-          "00:02:40",
-          "00:03:00",
-          "00:03:20",
-          "00:04:00",
-          "00:06:00",
-        ]}
+        annotationsTimeframe={annotationsTimeframe}
       />
     </div>
   )
