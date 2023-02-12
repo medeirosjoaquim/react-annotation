@@ -47,9 +47,19 @@ export const useFabric = (
           (item: any) => item.time === currentTime
         )
         fabricInstance.clear()
-        fabricInstance.loadFromJSON(obj, () => {
-          fabricInstance.renderAll()
-        })
+        fabricInstance.loadFromJSON(
+          obj,
+          () => {
+            console.log(currentTime)
+            fabricInstance.renderAll()
+          },
+          (_, object) => {
+            setTimeout(() => {
+              fabricInstance.remove(object)
+              fabricInstance.discardActiveObject().renderAll()
+            }, 1000)
+          }
+        )
         console.log(currentTime)
       }
     }
