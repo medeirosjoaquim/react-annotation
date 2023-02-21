@@ -53,7 +53,7 @@ export const useFabric = (
             console.log(currentTime)
             fabricInstance.renderAll()
           },
-          (_, object) => {
+          (_: any, object: any) => {
             setTimeout(() => {
               fabricInstance.remove(object)
               fabricInstance.discardActiveObject().renderAll()
@@ -89,7 +89,7 @@ export const useFabric = (
     })
     fabricInstance.discardActiveObject().renderAll()
   }
-  const onSave = () => {
+  const onSave = (currentTime: any) => {
     const canvas = fabricInstance.toObject(["id", "time"])
     canvas.id = nanoid()
     canvas.time = currentTime

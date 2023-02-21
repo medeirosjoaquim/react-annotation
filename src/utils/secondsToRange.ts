@@ -23,3 +23,5 @@ const secondsToRange = (duration: number): string[] => {
   }
   return range
 }
+
+export default secondsToRange

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, MutableRefObject } from "react"
+import secondsToRange from "./utils/secondsToRange"
 
 interface VideoTimelineProps {
   video: File
